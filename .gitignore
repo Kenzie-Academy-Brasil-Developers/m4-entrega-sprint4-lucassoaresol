@@ -2,3 +2,5 @@ node_modules/
 dist/
 **lock**
 .env
+.editorconfig
+.eslintrc.json
