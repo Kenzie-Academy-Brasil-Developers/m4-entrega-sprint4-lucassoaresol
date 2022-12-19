@@ -1,16 +1,19 @@
+import { getRounds, hashSync } from 'bcryptjs';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  BeforeUpdate,
+  BeforeInsert,
 } from 'typeorm';
 
-@Entity()
-export class usuarios {
+@Entity('users')
+class User {
   @Column({ type: 'text' })
     name: string;
-  @Column({ type: 'text' })
+  @Column({ type: 'text', unique: true })
     email: string;
   @Column({ type: 'text' })
     password: string;
@@ -24,4 +27,14 @@ export class usuarios {
     updatedAt: Date;
   @PrimaryGeneratedColumn('uuid')
     id: string;
+  @BeforeUpdate()
+  @BeforeInsert()
+  hashPassword() {
+    const isEncrypted = getRounds(this.password);
+    if (!isEncrypted) {
+      this.password = hashSync(this.password, 10);
+    }
+  }
 }
+
+export default User;
